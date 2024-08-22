@@ -126,8 +126,12 @@ class RequestCode {
 extension on WebViewController {
   Future<void> hideSignupElements() async {
     // TODO: Add support for Google's SSO
-    final microsoftJs =
-        "document.getElementById('signup').setAttribute('hidden', 'true');";
+    final microsoftJs = '''
+      var signupButton = document.getElementById('signup')
+      if (signupButton) {
+        signupButton.setAttribute('hidden', 'true');
+      }
+    ''';
     await runJavaScript(microsoftJs);
   }
 }
