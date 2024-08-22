@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -40,6 +41,7 @@ class RequestCode {
     await controller.setNavigationDelegate(
       NavigationDelegate(
         onPageFinished: (url) {
+          log('Accessing URL: $url', name: 'aad_oauth');
           controller.hideSignupElements();
           _config.onPageFinished?.call(url);
         },
@@ -125,6 +127,7 @@ class RequestCode {
 
 extension on WebViewController {
   Future<void> hideSignupElements() async {
+    log('Hiding signup elements', name: 'aad_oauth');
     // TODO: Add support for Google's SSO
     final javascript = '''
       // JavaScript code to find an element by XPath and hide it
