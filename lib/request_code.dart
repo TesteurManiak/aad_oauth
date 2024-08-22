@@ -38,6 +38,10 @@ class RequestCode {
     await controller.setUserAgent(_config.userAgent);
     await controller.loadRequest(launchUri);
 
+    await controller.setOnConsoleMessage((message) {
+      log('Console: ${message.message}', name: 'aad_oauth');
+    });
+
     await controller.setNavigationDelegate(
       NavigationDelegate(
         onPageFinished: (url) {
@@ -127,10 +131,18 @@ class RequestCode {
 
 extension on WebViewController {
   Future<void> hideSignupElements() async {
-    // TODO: Add support for Google's SSO
     final javascript = '''
-    document.addEventListener("DOMContentLoaded", function() {
+      console.log("start hideSignupElements");
       var signupElement = document.getElementById("signup");
+      console.log("sync signupElement", signupElement);
+      if (signupElement) {
+        signupElement.style.display = "none";
+      }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      console.log("DOMContentLoaded hideSignupElements");
+      var signupElement = document.getElementById("signup");
+      console.log("listener signupElement", signupElement);
       if (signupElement) {
         signupElement.style.display = "none";
       }
