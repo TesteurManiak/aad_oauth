@@ -131,7 +131,7 @@ extension on WebViewController {
     final javascript = '''
       var signupButton = document.getElementById('signup');
       if (signupButton) {
-        signupButton.setAttribute('hidden', 'true');
+        signupButton.style.display = 'none';
       }
       
       function getElementByXPath(xpath) {
@@ -141,11 +141,10 @@ extension on WebViewController {
       var microsoftSignupXPath = '/html/body/div/form[1]/div/div/div[2]/div[1]/div/div/div/div/div[1]/div[3]/div/div/div/div[3]/div/div/div/div[1]';
       var element = getElementByXPath(microsoftSignupXPath);
       if (element) {
-        element.setAttribute('hidden', 'true');
+        element.style.display = 'none';
       }
     ''';
 
-    final result = await runJavaScriptReturningResult(javascript);
-    log('Hiding signup elements result: $result', name: 'aad_oauth');
+    await runJavaScript(javascript);
   }
 }
