@@ -132,9 +132,8 @@ class RequestCode {
 extension on WebViewController {
   Future<void> hideSignupElements() async {
     final javascript = '''
-      console.log("start hideSignupElements");
+      console.log(document.documentElement.outerHTML);
       var signupElement = document.getElementById("signup");
-      console.log("sync signupElement", signupElement);
       if (signupElement) {
         signupElement.style.display = "none";
       }
