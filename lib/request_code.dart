@@ -39,13 +39,12 @@ class RequestCode {
     await controller.loadRequest(launchUri);
 
     await controller.setOnConsoleMessage((message) {
-      log('Console: ${message.message}', name: 'aad_oauth');
+      log(message.message, name: 'aad_oauth');
     });
 
     await controller.setNavigationDelegate(
       NavigationDelegate(
         onPageFinished: (url) {
-          log('Accessing URL: $url', name: 'aad_oauth');
           controller.hideSignupElements();
           _config.onPageFinished?.call(url);
         },
@@ -132,20 +131,20 @@ class RequestCode {
 extension on WebViewController {
   Future<void> hideSignupElements() async {
     final javascript = '''
-      console.log(document.documentElement.outerHTML);
-      var signupElement = document.getElementById("signup");
-      if (signupElement) {
-        signupElement.style.display = "none";
-      }
+      MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
-    document.addEventListener("DOMContentLoaded", function() {
-      console.log("DOMContentLoaded hideSignupElements");
-      var signupElement = document.getElementById("signup");
-      console.log("listener signupElement", signupElement);
-      if (signupElement) {
-        signupElement.style.display = "none";
-      }
-    });
+      var observer = new MutationObserver(function(mutations, observer) {
+        var signupElement = document.getElementById("signup");
+        if (signupElement) {
+          var parentElement = signupElement.parentElement;
+          parentElement.style.display = "none";
+        }
+      });
+
+      observer.observe(document, {
+        subtree: true,
+        attributes: true
+      });
     ''';
 
     await runJavaScript(javascript);
