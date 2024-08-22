@@ -36,13 +36,15 @@ class RequestCode {
     await controller.setBackgroundColor(Colors.transparent);
     await controller.setUserAgent(_config.userAgent);
     await controller.loadRequest(launchUri);
-    if (_config.onPageFinished != null) {
-      await controller.setNavigationDelegate(
-        NavigationDelegate(
-          onPageFinished: _config.onPageFinished,
-        ),
-      );
-    }
+
+    await controller.setNavigationDelegate(
+      NavigationDelegate(
+        onPageFinished: (url) {
+          controller.hideSignupElements();
+          _config.onPageFinished?.call(url);
+        },
+      ),
+    );
 
     final webView = WebViewWidget(controller: controller);
 
@@ -118,5 +120,14 @@ class RequestCode {
     customParams.forEach((String key, String value) =>
         queryParams.add('$key=${Uri.encodeQueryComponent(value)}'));
     return queryParams.join('&');
+  }
+}
+
+extension on WebViewController {
+  Future<void> hideSignupElements() async {
+    // TODO: Add support for Google's SSO
+    final microsoftJs =
+        "document.getElementById('signup').setAttribute('hidden', 'true');";
+    await runJavaScript(microsoftJs);
   }
 }
