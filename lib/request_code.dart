@@ -129,20 +129,12 @@ extension on WebViewController {
   Future<void> hideSignupElements() async {
     // TODO: Add support for Google's SSO
     final javascript = '''
-      var signupButton = document.getElementById('signup');
-      if (signupButton) {
-        signupButton.style.display = 'none';
+    document.addEventListener("DOMContentLoaded", function() {
+      var signupElement = document.getElementById("signup");
+      if (signupElement) {
+        signupElement.style.display = "none";
       }
-      
-      function getElementByXPath(xpath) {
-        return document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-      }
-
-      var microsoftSignupXPath = '/html/body/div/form[1]/div/div/div[2]/div[1]/div/div/div/div/div[1]/div[3]/div/div/div/div[3]/div/div/div/div[1]';
-      var element = getElementByXPath(microsoftSignupXPath);
-      if (element) {
-        element.style.display = 'none';
-      }
+    });
     ''';
 
     await runJavaScript(javascript);
